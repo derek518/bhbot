@@ -7,7 +7,7 @@ require('babel-core/register');
 // var axios = require('axios');
 // var cron = require('node-cron');
 var program = require('commander');
-var BHBot = require('./bhbot').default;
+var BHBot = require('./src/bhbot').default;
  
 program
   .version('0.1.0')
@@ -17,7 +17,7 @@ program
 
 var bhbot = new BHBot();
 bhbot.init();
-// bhbot.startWork();
+bhbot.startUpVoteWork();
 
 
 
