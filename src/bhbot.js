@@ -21,27 +21,49 @@ export class BHBot {
         this.bhApi.init();      
     }
 
-    startUpVoteWork() {
+    doLogin() {
         this.bhApi.login()
-        .then(authData => {
-            if (_.isEmpty(authData)) return;
+        .then(authData => {})
+        .catch(error => {});
+    }
 
-            setInterval(async () => {
-                const now = new Date();
-                console.log(`---${now.getHours()}:${now.getMinutes()}---`);
-                const matchList = upVoteList.filter(item => now.getHours() === item.hour && now.getMinutes() === item.minute);
-                if (!_.isEmpty(matchList)) {
-                    try {
-                        for (let target of matchList) {
-                            let result = await this.upVoteJob(target);
-                            if (result > 0) break;
-                        }
-                    } catch (error) {
-                        console.log('upVote error: ', error);
+    startUpVoteWork() {
+        setInterval(async () => {
+            const now = new Date();
+            console.log(`---${now.getHours()}:${now.getMinutes()}-->${this.upCount}`);
+            const matchList = upVoteList.filter(item => now.getHours() === item.hour && now.getMinutes() === item.minute);
+            if (!_.isEmpty(matchList)) {
+                try {
+                    for (let target of matchList) {
+                        let result = await this.upVoteJob(target);
+                        if (result > 0) break;
                     }
+                } catch (error) {
+                    console.log('upVote error: ', error);
                 }
-            }, 5*1000);
-        });
+            }
+        }, 5*1000);
+
+        // this.bhApi.login()
+        // .then(authData => {
+        //     if (_.isEmpty(authData)) return;
+
+        //     setInterval(async () => {
+        //         const now = new Date();
+        //         console.log(`---${now.getHours()}:${now.getMinutes()}---`);
+        //         const matchList = upVoteList.filter(item => now.getHours() === item.hour && now.getMinutes() === item.minute);
+        //         if (!_.isEmpty(matchList)) {
+        //             try {
+        //                 for (let target of matchList) {
+        //                     let result = await this.upVoteJob(target);
+        //                     if (result > 0) break;
+        //                 }
+        //             } catch (error) {
+        //                 console.log('upVote error: ', error);
+        //             }
+        //         }
+        //     }, 5*1000);
+        // });
     }
 
     async upVoteJob(target) {
@@ -51,15 +73,15 @@ export class BHBot {
         let articles = result&&result.list;
         if (!_.isEmpty(articles)) {
             let article = articles[0];
-            console.log(`get article for user ${target.name}: `, article);
-            if (article.up > 0) upResult;
+            console.log(`get article for user ${target.name}: `, article.id);
+            if (article.up > 0) return upResult;
 
-            if (article.ups < 50) {
+            if (article.ups < 100) {
                 upResult = await this.bhApi.upVote(article.id);
                 this.upCount++;
             }
             if (article.cmts < 20) {
-                let commentResult = await this.createComment(article.id);
+                let commentResult = await this.bhApi.createComment(article.id);
                 this.commentCount++;
             }
         }
@@ -73,12 +95,14 @@ export class BHBot {
 
     async startFollowWork() {
         try {
-            let authData = await this.bhApi.login();
+            // let authData = await this.bhApi.login();
 
-            let ret = 0;
-            if (!_.isEmpty(authData)) {
-                ret = await this.bhApi.followJob();
-            }
+            // let ret = 0;
+            // if (!_.isEmpty(authData)) {
+            //     ret = await this.bhApi.followJob();
+            // }
+
+            let ret = await this.followJob();
             
             console.log('follow work done!')
             return ret; 
@@ -99,6 +123,7 @@ export class BHBot {
             articles = articles.filter(item => item.follow === 0);
         }
         articles = _.uniqWith(articles, (a, b) => a.userId === b.userId);
+        articles = articles.slice(0, 5);
 
         console.log(`articles len: ${articles.length}`)
 
