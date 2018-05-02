@@ -124,4 +124,46 @@ export default [{
     userId: 5402, name: ' 荆凯shuke037', hour: 0, minute: 37
 }, {
     userId: 228678, name: ' 珞珈山神', hour: 20, minute: 5
+}, {
+    userId: 16649, name: ' 风范', hour: 12, minute: 12
+}, {
+    userId: 2994, name: '你只是懒而已', hour: 12, minute: 12
+}, {
+    userId: 121788, name: '比特币教主', hour: 12, minute: 0
+}, {
+    userId: 135119, name: '币乎公告', hour: 19, minute: 24
+}, {
+    userId: 21004, name: '风华雁飞', hour: 21, minute: 11
+}, {
+    userId: 12574, name: '赋能懂事局局长', hour: 6, minute: 6
+}, {
+    userId: 298379, name: '豆尼玛', hour: 11, minute: 35
+}, {
+    userId: 271765, name: 'Alexey', hour: 18, minute: 16
+}, {
+    userId: 21800, name: '苏江', hour: 5, minute: 30
+}, {
+    userId: 358329, name: '区块链顽主', hour: 18, minute: 0
+}, {
+    userId: 209811, name: '榆钱', hour: 11, minute: 0
+}, {
+    userId: 211448, name: '公众号冰封千年', hour: 21, minute: 30
+}, {
+    userId: 288153, name: '无忌区块链', hour: 22, minute: 31
+}, {
+    userId: 327646, name: '凌凌伊', hour: 22, minute: 30
+}, {
+    userId: 1099, name: '何德林', hour: 13, minute: 35
+}, {
+    userId: 54711, name: '陈菜根', hour: 10, minute: 26
+}, {
+    userId: 268779, name: '把诗意放在快乐里', hour: 22, minute: 36
+}, {
+    userId: 287019, name: '比特猫', hour: 21, minute: 0
+}, {
+    userId: 35297, name: '楷书', hour: 16, minute: 0
+}, {
+    userId: 197646, name: '一休哥', hour: 12, minute: 30
+}, {
+    userId: 268933, name: 'ro0t', hour: 5, minute: 1
 }];

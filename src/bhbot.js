@@ -46,7 +46,7 @@ export class BHBot {
                         if (result > 0) break;
                     }
                 } catch (error) {
-                    this.skipCount = 120;
+                    this.skipCount = 20;
                     console.log('upVote error: ', error);
                 }
             }
@@ -85,7 +85,7 @@ export class BHBot {
 
         let result = await this.bhApi.getUserArtList(target.userId);
         if (!result) {
-            this.skipCount = 120;
+            this.skipCount = 20;
             return 0;
         }
         let articles = result&&result.list;
@@ -102,7 +102,7 @@ export class BHBot {
                         this.upCount++;
                     }
                 } catch (error) {
-                    this.skipCount = 120;
+                    this.skipCount = 20;
                     console.log('upVote error: ', error);
                 }
             }
@@ -111,7 +111,7 @@ export class BHBot {
                     let commentResult = await this.bhApi.createComment(article.id);
                     if (commentResult>0) this.commentCount++;
                 }  catch (error) {
-                    this.skipCount = 120;
+                    this.skipCount = 20;
                     console.log('comment error: ', error);
                 }
             }
