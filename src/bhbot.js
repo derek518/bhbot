@@ -15,6 +15,8 @@ export class BHBot {
         this.upCount = 0;
         this.commentCount = 0;
         this.lastTime = new Date();
+        this.lastUpUserId = 0;
+        this.skipCount = 0;
     }
 
     init() {
@@ -44,6 +46,7 @@ export class BHBot {
                         if (result > 0) break;
                     }
                 } catch (error) {
+                    this.skipCount = 120;
                     console.log('upVote error: ', error);
                 }
             }
@@ -74,7 +77,17 @@ export class BHBot {
     async upVoteJob(target) {
         let upResult = 0;
 
+        if (this.lastUpUserId === target.userId) return 0;
+        if (this.skipCount>0) {
+            this.skipCount--;
+            return 0;
+        }
+
         let result = await this.bhApi.getUserArtList(target.userId);
+        if (!result) {
+            this.skipCount = 120;
+            return 0;
+        }
         let articles = result&&result.list;
         if (!_.isEmpty(articles)) {
             let article = articles[0];
@@ -84,8 +97,12 @@ export class BHBot {
             if (article.ups < 200) {
                 try {
                     upResult = await this.bhApi.upVote(article.id);
-                    if (upResult>0) this.upCount++;
+                    if (upResult>0) {
+                        this.lastUpUserId = target.userId;
+                        this.upCount++;
+                    }
                 } catch (error) {
+                    this.skipCount = 120;
                     console.log('upVote error: ', error);
                 }
             }
@@ -94,6 +111,7 @@ export class BHBot {
                     let commentResult = await this.bhApi.createComment(article.id);
                     if (commentResult>0) this.commentCount++;
                 }  catch (error) {
+                    this.skipCount = 120;
                     console.log('comment error: ', error);
                 }
             }
@@ -162,11 +180,11 @@ export class BHBot {
                                 } catch(exception) {}
                                 this.commentCount++;
                                 callback(null);
-                            }, 5*1000);
+                            }, 10*1000);
                         } else {
                             callback(null);
                         }
-                    }, 5*1000);
+                    }, 10*1000);
             }});
 
             async.waterfall(tasks, (err, result) => {
