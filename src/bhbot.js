@@ -14,7 +14,7 @@ export class BHBot {
         this.boardIndex = Math.floor(Math.random()*this.boards.length);
         this.upCount = 0;
         this.commentCount = 0;
-
+        this.lastTime = new Date();
     }
 
     init() {
@@ -30,7 +30,11 @@ export class BHBot {
     startUpVoteWork() {
         setInterval(async () => {
             const now = new Date();
-            console.log(`---${now.getHours()}:${now.getMinutes()}-->${this.upCount}`);
+            if (now.getTime()-this.lastTime.getTime() > 60*1000) {
+                console.log(`---${now.getHours()}:${now.getMinutes()}-->${this.upCount}`);
+                this.lastTime = now;
+            }
+            
             const matchList = upVoteList.filter(item => now.getHours() === item.hour && now.getMinutes() === item.minute);
             if (!_.isEmpty(matchList)) {
                 try {
