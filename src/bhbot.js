@@ -81,10 +81,10 @@ export class BHBot {
             console.log(`get article for user ${target.name}: ${article.id} with ups ${article.ups}`);
             if (article.up > 0) return upResult;
 
-            if (article.ups < 3000) {
+            if (article.ups < 200) {
                 try {
                     upResult = await this.bhApi.upVote(article.id);
-                    this.upCount++;
+                    if (upResult>0) this.upCount++;
                 } catch (error) {
                     console.log('upVote error: ', error);
                 }
@@ -92,7 +92,7 @@ export class BHBot {
             if (article.cmts < 40) {
                 try {
                     let commentResult = await this.bhApi.createComment(article.id);
-                    this.commentCount++;
+                    if (commentResult>0) this.commentCount++;
                 }  catch (error) {
                     console.log('comment error: ', error);
                 }
