@@ -36,6 +36,7 @@ export class BHBot {
             }
             
             const matchList = upVoteList.filter(item => now.getHours() === item.hour && now.getMinutes() === item.minute);
+            // const matchList = upVoteList.slice(0,5);
             if (!_.isEmpty(matchList)) {
                 try {
                     for (let target of matchList) {
@@ -77,16 +78,24 @@ export class BHBot {
         let articles = result&&result.list;
         if (!_.isEmpty(articles)) {
             let article = articles[0];
-            console.log(`get article for user ${target.name}: `, article.id);
+            console.log(`get article for user ${target.name}: ${article.id} with ups ${article.ups}`);
             if (article.up > 0) return upResult;
 
-            if (article.ups < 100) {
-                upResult = await this.bhApi.upVote(article.id);
-                this.upCount++;
+            if (article.ups < 3000) {
+                try {
+                    upResult = await this.bhApi.upVote(article.id);
+                    this.upCount++;
+                } catch (error) {
+                    console.log('upVote error: ', error);
+                }
             }
-            if (article.cmts < 20) {
-                let commentResult = await this.bhApi.createComment(article.id);
-                this.commentCount++;
+            if (article.cmts < 40) {
+                try {
+                    let commentResult = await this.bhApi.createComment(article.id);
+                    this.commentCount++;
+                }  catch (error) {
+                    console.log('comment error: ', error);
+                }
             }
         }
 

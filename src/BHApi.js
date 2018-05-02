@@ -9,7 +9,7 @@ export class BHApi {
         this.file = './auth.json';
         this.instance = axios.create({
             baseURL: 'https://be02.bihu.com/bihube-pc/api',
-            timeout: 3000
+            timeout: 5000
           });
         
         this.config = {
