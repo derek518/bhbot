@@ -4,10 +4,9 @@
  * Module dependencies.
  */
 require('babel-core/register');
-// var axios = require('axios');
-// var cron = require('node-cron');
+var cron = require('node-cron');
 var program = require('commander');
-var BHBot = require('./src/bhbot').default;
+var BHBotV2 = require('./src/bhbotV2').default;
  
 program
   .version('0.1.0')
@@ -16,7 +15,7 @@ program
   .option('-f, --follow', 'Do follow')
   .parse(process.argv);
 
-var bhbot = new BHBot();
+var bhbot = new BHBotV2();
 bhbot.init();
 
 if (program.login) {
@@ -24,26 +23,11 @@ if (program.login) {
 }
 
 if (program.upvote) {
-  bhbot.startUpVoteWork();
+  bhbot.startUpVote();
 }
   
 if (program.follow) {
-  setImmediate(() => {
-    console.log('aaaa')
-    bhbot.startFollowWork()
-        .then(_ => _)
-        .catch(err => {
-  
-        })
-  });
-  
-  setInterval(() => {
-      bhbot.startFollowWork()
-        .then(_ => _)
-        .catch(err => {
-  
-        })
-  }, 1200*1000);
+  bhbot.startFollow();
 }
 
  

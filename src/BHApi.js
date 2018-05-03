@@ -39,16 +39,16 @@ export class BHApi {
 
     async login() {
         try {
-            if (!_.isEmpty(this.authData)) {
-                let data = await this.personalInfo();
-                if (data&&data.nickName) {
-                    console.log('Already login!');
-                } else {
-                    this.authData = {};
-                }
-            }
+            // if (!_.isEmpty(this.authData)) {
+            //     let data = await this.personalInfo();
+            //     if (data&&data.nickName) {
+            //         console.log('Already login!');
+            //     } else {
+            //         this.authData = {};
+            //     }
+            // }
 
-            if (_.isEmpty(this.authData)) {
+            // if (_.isEmpty(this.authData)) {
                 let data = await this.loginViaPassword();
                 if (!(data.accessToken)) return 0;
                 this.authData = data;
@@ -57,7 +57,7 @@ export class BHApi {
                 try {
                     fs.writeFileSync(this.file, JSON.stringify(this.authData));
                 } catch(error) {}
-            }
+            // }
         } catch (error) {
             console.log('login error: ', error);
             this.authData = {};
