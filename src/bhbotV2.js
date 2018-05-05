@@ -32,7 +32,7 @@ export class BHBotV2 {
 
     startUpVote() {
         for (let voteItem of upVoteList) {
-            cron.schedule(`1 ${voteItem.minute} ${voteItem.hour} * * *`, () => {
+            cron.schedule(`0 ${voteItem.minute} ${voteItem.hour} * * *`, () => {
                 this.startUpVoteJob(voteItem);
             });
         }
@@ -73,9 +73,22 @@ export class BHBotV2 {
         this.retryCount = 5;
         let voteItemCopy = {...voteItem};
         voteItemCopy.voted = 0;
+
+        setImmediate(async () => {
+            const now = new Date();
+            console.log(`---${now}-->${voteItemCopy.name}(${voteItemCopy.userId}) ${this.upCount}`);
+        
+            try {
+                voteItemCopy.voted = await this.upVoteJob(voteItemCopy);
+            } catch(error) {
+                this.retryCount = 0;
+                console.log('upVote error: ', error);
+            }
+        });
+
         let timer = setInterval(async () => {
             const now = new Date();
-            console.log(`---${now.getHours()}:${now.getMinutes()}-->${voteItemCopy.name}(${voteItemCopy.userId}) ${this.upCount}`);
+            console.log(`---${now}-->${voteItemCopy.name}(${voteItemCopy.userId}) ${this.upCount}`);
             if (voteItemCopy.voted > 0 || this.retryCount === 0) {
                 console.log(`stopped job for user ${voteItemCopy.name}`)
                 clearInterval(timer);
@@ -106,14 +119,13 @@ export class BHBotV2 {
 
         if (!_.isEmpty(articles)) {
             let article = articles[0];
-            console.log(`get article for user ${target.name}: ${article.id} with ups ${article.ups} (time: ${new Date(article.createTime)})`);
+            console.log(`${new Date()}: get article for user ${target.name}: ${article.id} with ups ${article.ups} (time: ${new Date(article.createTime)})`);
             if (article.up > 0) return upResult;
 
             if (article.ups < 100) {
                 try {
                     upResult = await this.bhApi.upVote(article.id);
                     if (upResult>0) {
-                        this.lastUpUserId = target.userId;
                         this.upCount++;
                     }
                 } catch (error) {
