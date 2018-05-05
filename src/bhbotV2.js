@@ -183,7 +183,8 @@ export class BHBotV2 {
 
         console.log(`articles len: ${articles.length}`)
 
-        let ret = await this.followUsers(articles);
+        // let ret = await this.followUsers(articles);
+        let ret = await this.commentUsers(articles);
       
         return ret;
     }
@@ -221,7 +222,28 @@ export class BHBotV2 {
         return 0;
     }
 
-    
+    async commentUsers(articles) {
+        if (!_.isEmpty(articles)) {
+            let tasks = articles.map(item => {
+                return (callback) => {
+                    setTimeout(async () => {
+                        let ret = 0;
+                        try {
+                            ret = await this.bhApi.createComment(item.id);
+                        } catch(exception) {}
+                        this.commentCount++;
+                        callback(null);
+                    }, 10*1000);
+            }});
+
+            async.waterfall(tasks, (err, result) => {
+                console.log(`follow user done`)
+                return 1;
+            });
+
+        }
+        return 0;
+    }
 }
 
 export default BHBotV2;
