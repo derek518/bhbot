@@ -17,7 +17,7 @@ export class BHBotV2 {
         this.commentCount = 0;
         this.lastTime = new Date();
         this.lastUpUserId = 0;
-        this.skipCount = 0;
+        this.retryCount = 0;
     }
 
     init() {
@@ -32,7 +32,7 @@ export class BHBotV2 {
 
     startUpVote() {
         for (let voteItem of upVoteList) {
-            cron.schedule(`3 ${voteItem.minute} ${voteItem.hour} * * *`, () => {
+            cron.schedule(`1 ${voteItem.minute} ${voteItem.hour} * * *`, () => {
                 this.startUpVoteJob(voteItem);
             });
         }
@@ -48,45 +48,65 @@ export class BHBotV2 {
         });
     }
 
+    dumpArticles() {
+        let count = 0;
+        for (let voteItem of upVoteList) {
+            setTimeout(async () => {
+                let result = await this.bhApi.getUserArtList(voteItem.userId);
+                let articles = result&&result.list;
+
+                this.printArticles(voteItem.name, articles);
+            }, count*5*1000);
+            count++;
+        }
+    }
+
+    printArticles(name, articles) {
+        if (!_.isEmpty(articles)) {
+            articles.map(article => {
+                console.log(`user ${name} with article ${article.id} with ups ${article.ups} (time: ${new Date(article.createTime)})`)
+            })
+        }        
+    }
+
     startUpVoteJob(voteItem) {
-        this.skipCount = 0;
+        this.retryCount = 5;
         let voteItemCopy = {...voteItem};
         voteItemCopy.voted = 0;
         let timer = setInterval(async () => {
             const now = new Date();
             console.log(`---${now.getHours()}:${now.getMinutes()}-->${voteItemCopy.name}(${voteItemCopy.userId}) ${this.upCount}`);
-            if (voteItemCopy.voted > 0 || voteItemCopy.hour != now.getHours() || voteItemCopy.minute != now.getMinutes()) {
+            if (voteItemCopy.voted > 0 || this.retryCount === 0) {
                 console.log(`stopped job for user ${voteItemCopy.name}`)
                 clearInterval(timer);
                 return;
             }
 
-            if (this.skipCount>0) {
-                this.skipCount--;
-                return;
-            }
+            this.retryCount--;
 
             try {
                 voteItemCopy.voted = await this.upVoteJob(voteItemCopy);
             } catch(error) {
-                this.skipCount = 10;
+                this.retryCount = 0;
                 console.log('upVote error: ', error);
             }
-        }, 1*1000);
+        }, 2*1000);
     }
 
+    
     async upVoteJob(target) {
         let upResult = 0;
 
         let result = await this.bhApi.getUserArtList(target.userId);
         if (!result) {
-            this.skipCount = 20;
+            this.retryCount = 0;
             return 0;
         }
         let articles = result&&result.list;
+
         if (!_.isEmpty(articles)) {
             let article = articles[0];
-            console.log(`get article for user ${target.name}: ${article.id} with ups ${article.ups}`);
+            console.log(`get article for user ${target.name}: ${article.id} with ups ${article.ups} (time: ${new Date(article.createTime)})`);
             if (article.up > 0) return upResult;
 
             if (article.ups < 100) {
@@ -97,7 +117,7 @@ export class BHBotV2 {
                         this.upCount++;
                     }
                 } catch (error) {
-                    this.skipCount = 20;
+                    this.retryCount = 0;
                     console.log('upVote error: ', error);
                 }
             } else if (Date.now()-article.createTime<60*1000) {
@@ -110,7 +130,7 @@ export class BHBotV2 {
                     let commentResult = await this.bhApi.createComment(article.id);
                     if (commentResult>0) this.commentCount++;
                 }  catch (error) {
-                    this.skipCount = 20;
+                    this.retryCount = 0;
                     console.log('comment error: ', error);
                 }
             }

@@ -13,6 +13,7 @@ program
   .option('-l, --login', 'Do login')
   .option('-u, --upvote', 'Do upvote')
   .option('-f, --follow', 'Do follow')
+  .option('-d, --dump', 'Dump articles')
   .parse(process.argv);
 
 var bhbot = new BHBotV2();
@@ -28,6 +29,10 @@ if (program.upvote) {
   
 if (program.follow) {
   bhbot.startFollow();
+}
+
+if (program.dump) {
+  bhbot.dumpArticles();
 }
 
  

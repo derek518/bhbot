@@ -1,21 +1,23 @@
 export default [{
-    userId: 12627, name: 'JIMI', hour: 7, minute: 7
+    userId: 12627, name: 'JIMI', hour: 7, minute: 7, second: 3
 }, {
-    userId: 483, name: '玩火的猴子', hour: 7, minute: 21
+    userId: 483, name: '玩火的猴子', hour: 7, minute: 21, second: 1
 }, {
-    userId: 2234, name: '南宫远', hour: 8, minute: 8
+    userId: 2234, name: '南宫远', hour: 8, minute: 8, second: 2
 }, {
-    userId: 193646, name: 'wdctll', hour: 9, minute: 9
+    userId: 193646, name: 'wdctll', hour: 9, minute: 9, second: 3
 }, {
     userId: 304731, name: '区块链生成指南', hour: 6, minute: 30
 }, {
-    userId: 55332, name: '吴庆英', hour: 6, minute: 46
+    userId: 55332, name: '吴庆英', hour: 6, minute: 46, second: 1
 }, {
     userId: 304618, name: '圊呓语', hour: 5, minute: 55
 }, {
     userId: 304615, name: '小韭菜的逆袭', hour: 5, minute: 55
 }, {
-    userId: 168480, name: 'Tesla', hour: 5, minute: 20
+    userId: 168480, name: 'Tesla', hour: 5, minute: 20, second: 3
+}, {
+    userId: 168480, name: 'Tesla', hour: 5, minute: 20,
 }, {
     userId: 304629, name: '北平魏少', hour: 6, minute: 0
 }, {
@@ -57,9 +59,9 @@ export default [{
 }, {
     userId: 49648, name: '半闲花农', hour: 22, minute: 30
 }, {
-    userId: 106284, name: '1212秋刀鱼', hour: 9, minute: 30
+    userId: 106284, name: '1212秋刀鱼', hour: 9, minute: 30, second: 0
 }, {
-    userId: 106284, name: '1212秋刀鱼', hour: 19, minute: 45
+    userId: 106284, name: '1212秋刀鱼', hour: 20, minute: 0, second: 0
 }, {
     userId: 181440, name: '币圈少年', hour: 10, minute: 0
 }, {
